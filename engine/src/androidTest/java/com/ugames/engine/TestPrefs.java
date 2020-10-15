@@ -27,7 +27,6 @@ public class TestPrefs {
     public void useAppContext() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.ugames.engine.test", context.getPackageName());
-
     }
 
     @Test
@@ -77,6 +76,7 @@ public class TestPrefs {
     public void testDeleteAll() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         Prefs.init(context);
+
 
         for (int i = 0; i < 1000; i++) {
             Prefs.setString("testStringDelete" + i, "testString:" + i);

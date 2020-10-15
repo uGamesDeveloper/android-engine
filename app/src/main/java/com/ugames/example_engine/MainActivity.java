@@ -5,7 +5,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ugames.engine.prefs.MigrationPrefsEnum;
+import com.ugames.engine.prefs.PrefsLibrary;
 import com.ugames.engine.prefs.Prefs;
 import com.ugames.engine.coroutine.Coroutine;
 import com.ugames.engine.coroutine.instructions.WaitForSeconds;
@@ -17,8 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Prefs.init(this);
-        Prefs.migration(Migration.values());
+
 
         for (int i = 0; i < 1000; i++) {
             Prefs.setString("key", "value");
@@ -28,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         Coroutine.startCoroutine(coroutine, this);
     }
 
-    public enum Migration implements MigrationPrefsEnum {
+    public enum Migration implements PrefsLibrary {
         FirstElement,
         SecondElement,
         Settings

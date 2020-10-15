@@ -9,27 +9,33 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class Prefs {
 
     private static final String tag = Prefs.class.getSimpleName();
     private static Prefs instance;
     private Context context;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+
+    private HashMap<PrefsLibrary, SharedPreferences> sharedPreferencesHashMap = new HashMap<>();
+    private HashMap<PrefsLibrary, SharedPreferences.Editor> editorHashMap = new HashMap<>();
 
 
-    public static void migration(MigrationPrefsEnum[] names) {
-        for (int i = 0; i < names.length; i++) {
-            Log.e("TEST111", names[i].toString());
-        }
+    private enum DefaultLibrary implements PrefsLibrary {
+        UGamesSharedPreferences
     }
 
     @SuppressLint("CommitPrefEdits")
-    private Prefs(@NonNull Context context) {
+    private Prefs(@NonNull Context context, PrefsLibrary[] libraryNames) {
         this.context = context.getApplicationContext();
-        sharedPreferences = this.getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        for (com.ugames.engine.prefs.PrefsLibrary libraryName : libraryNames) {
+
+            SharedPreferences sharedPreferences = getContext().getSharedPreferences(libraryName.toString(), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            sharedPreferencesHashMap.put(DefaultLibrary.UGamesSharedPreferences, sharedPreferences);
+            editorHashMap.put(DefaultLibrary.UGamesSharedPreferences, editor);
+        }
     }
 
     private Context getContext() {
@@ -40,108 +46,198 @@ public class Prefs {
         return instance;
     }
 
-    private SharedPreferences.Editor getEditor() {
-        return editor;
-    }
-
-    private SharedPreferences getSharedPreferences() {
-        sharedPreferences = this.getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences;
-    }
 
     public static void init(@NonNull Context context) {
         if (getInstance() == null || getInstance().getContext() != context) {
-            instance = new Prefs(context);
+            instance = new Prefs(context, new PrefsLibrary[]{DefaultLibrary.UGamesSharedPreferences});
         }
     }
 
+    public static void initWithMigration(@NonNull Context context, PrefsLibrary[] libraryNames) {
+        if (getInstance() == null || getInstance().getContext() != context) {
+            instance = new Prefs(context, libraryNames);
+        }
+    }
+
+    private static SharedPreferences getSharedPreferences(PrefsLibrary library) {
+        return getInstance().sharedPreferencesHashMap.get(library);
+    }
+
+    private static SharedPreferences.Editor getEditor(PrefsLibrary library) {
+        return getInstance().editorHashMap.get(library);
+    }
+
+    //region Int
+
     public static void setInt(@NonNull String key, int value) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(key, value);
+        setInt(key, value, DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void setInt(@NonNull String key, int value, PrefsLibrary library) {
+        getEditor(library).putInt(key, value);
     }
 
     public static int getInt(@NonNull String key, int defaultValue) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences.getInt(key, defaultValue);
+        return getInt(key, defaultValue, DefaultLibrary.UGamesSharedPreferences);
     }
 
+    public static int getInt(@NonNull String key, int defaultValue, PrefsLibrary library) {
+        return getSharedPreferences(library).getInt(key, defaultValue);
+    }
+
+    //endregion
+
+    //region long
     public static void setLong(@NonNull String key, long value) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(key, value);
+        setLong(key, value, DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void setLong(@NonNull String key, long value, PrefsLibrary library) {
+        getEditor(library).putLong(key, value);
     }
 
     public static long getLong(@NonNull String key, long defaultValue) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences.getLong(key, defaultValue);
+        return getLong(key, defaultValue, DefaultLibrary.UGamesSharedPreferences);
     }
 
+    public static long getLong(@NonNull String key, long defaultValue, PrefsLibrary library) {
+        return getSharedPreferences(library).getLong(key, defaultValue);
+    }
+
+    //endregion
+
+    //region float
+
     public static void setFloat(@NonNull String key, float value) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat(key, value);
+        setFloat(key, value, DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void setFloat(@NonNull String key, float value, PrefsLibrary library) {
+        getEditor(library).putFloat(key, value);
     }
 
     public static float getFloat(@NonNull String key, float defaultValue) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences.getFloat(key, defaultValue);
+        return getFloat(key, defaultValue, DefaultLibrary.UGamesSharedPreferences);
     }
 
+    public static float getFloat(@NonNull String key, float defaultValue, PrefsLibrary library) {
+        return getSharedPreferences(library).getFloat(key, defaultValue);
+    }
+
+    //endregion
+
+    //region bool
+
     public static void setBool(@NonNull String key, boolean value) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(key, value);
+        setBool(key, value, DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void setBool(@NonNull String key, boolean value, PrefsLibrary library) {
+        getEditor(library).putBoolean(key, value);
     }
 
     public static boolean getBool(@NonNull String key, boolean defaultValue) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(key, defaultValue);
+        return getBool(key, defaultValue, DefaultLibrary.UGamesSharedPreferences);
     }
 
-    public static void setString(String key, String value) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
+    public static boolean getBool(@NonNull String key, boolean defaultValue, PrefsLibrary library) {
+        return getSharedPreferences(library).getBoolean(key, defaultValue);
+    }
+
+    //endregion
+
+    //region string
+
+    public static void setString(@NonNull String key, String value) {
+        setString(key, value, DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void setString(@NonNull String key, String value, PrefsLibrary library) {
+        getEditor(library).putString(key, value);
     }
 
     public static String getString(@NonNull String key, String defaultValue) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences.getString(key, defaultValue);
+        return getString(key, defaultValue, DefaultLibrary.UGamesSharedPreferences);
     }
 
+    public static String getString(@NonNull String key, String defaultValue, PrefsLibrary library) {
+        return getSharedPreferences(library).getString(key, defaultValue);
+    }
+
+    //endregion
+
+    //region deleteKey
+
     public static void deleteKey(String key) {
-        if (hasKey(key)) {
-            getInstance().getEditor().remove(key);
+        deleteKey(key, DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void deleteKey(String key, PrefsLibrary library) {
+        SharedPreferences.Editor editor = getEditor(library);
+        if (hasKey(key, library)) {
+            editor.remove(key);
         }
     }
 
+    //endregion
+
+    //region deleteAll
+
     public static void deleteAll() {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        deleteAll(DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void deleteAll(PrefsLibrary library) {
+        SharedPreferences sharedPreferences = getSharedPreferences(library);
+        SharedPreferences.Editor editor = getEditor(library);
         for (String key : sharedPreferences.getAll().keySet()) {
             if (hasKey(key))
                 editor.remove(key);
         }
     }
 
+    //endregion
+
+    //region hasKey
+
     public static boolean hasKey(@NonNull String key) {
-        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
-        return sharedPreferences.contains(key);
+        return hasKey(key, DefaultLibrary.UGamesSharedPreferences);
     }
+
+    public static boolean hasKey(@NonNull String key, PrefsLibrary library) {
+        return getSharedPreferences(library).contains(key);
+    }
+
+    //endregion
+
+    //region save
 
     public static void save() {
-        getInstance().getEditor().apply();
+        save(DefaultLibrary.UGamesSharedPreferences);
     }
 
+    public static void save(PrefsLibrary library) {
+        getEditor(library).apply();
+    }
+
+    //endregion
+
+    //region showAll
+
     public static void showAll() {
-        ArrayList<String> keys = new ArrayList<>(getInstance().getSharedPreferences().getAll().keySet());
+        showAll(DefaultLibrary.UGamesSharedPreferences);
+    }
+
+    public static void showAll(PrefsLibrary library) {
+        ArrayList<String> keys = new ArrayList<>(getSharedPreferences(library).getAll().keySet());
         Collections.sort(keys);
 
         for (String key : keys) {
-            Object value = getInstance().getSharedPreferences().getAll().get(key);
+            Object value = getSharedPreferences(library).getAll().get(key);
             if (value != null)
                 Log.d(tag, key + ": " + value.toString());
         }
     }
+
+    //endregion
 }
