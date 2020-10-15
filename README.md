@@ -18,6 +18,6 @@ allprojects {
 ### App
 ```gradle
 dependencies {
- implementation 'com.github.uGamesDeveloper:android-engine:1.1.2''
+ implementation 'com.github.uGamesDeveloper:android-engine:1.1.3''
 }
 ```
