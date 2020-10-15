@@ -3,8 +3,10 @@
 [![](https://jitpack.io/v/uGamesDeveloper/android-engine.svg)](https://jitpack.io/#uGamesDeveloper/android-engine)
 
 
-## Gradle Dependency
+## Gradle Зависимости
 
+
+### Project
 ```gradle
 allprojects {
  repositories {
@@ -13,9 +15,9 @@ allprojects {
  }
 }
 ```
-
+### App
 ```gradle
 dependencies {
- implementation 'com.github.uGamesDeveloper:android-engine:1.1.1''
+ implementation 'com.github.uGamesDeveloper:android-engine:1.1.2''
 }
 ```
