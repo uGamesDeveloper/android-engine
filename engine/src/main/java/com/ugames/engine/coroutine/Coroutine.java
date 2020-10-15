@@ -22,6 +22,10 @@ public class Coroutine {
         coroutine.run();
     }
 
+    public static void stopCoroutine(@NonNull Coroutine coroutine) {
+        coroutine.stopCoroutine();
+    }
+
     public void main(YieldInstruction yieldInstruction) {
         queue.addLast(new InstructionStruct(yieldInstruction, TypeInstruction.main));
     }
@@ -44,10 +48,21 @@ public class Coroutine {
                 else {
                     run();
                 }
-            } else {
+            } else if(instructionStruct.getTypeInstruction() == TypeInstruction.coroutineBreak) {
+                stopCoroutine();
+            }
+            else {
                 throw new IllegalArgumentException("Not current type instruction yet.");
             }
         }
+    }
+
+    private void stopCoroutine() {
+        queue.clear();
+    }
+
+    public void coroutineBreak() {
+        queue.addLast(new InstructionStruct(null, TypeInstruction.coroutineBreak));
     }
 
     public void complete() {
@@ -56,7 +71,8 @@ public class Coroutine {
 
     private enum TypeInstruction {
         main,
-        yield
+        yield,
+        coroutineBreak
     }
 
     private static class InstructionStruct {

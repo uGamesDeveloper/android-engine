@@ -1,5 +1,6 @@
 package com.ugames.engine;
 
+import android.app.Activity;
 import android.content.Context;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -25,6 +26,7 @@ public class TestPrefs {
     public void useAppContext() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.ugames.engine.test", context.getPackageName());
+
     }
 
     @Test

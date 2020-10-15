@@ -14,6 +14,4 @@ public class WaitForSeconds {
 
         new Handler().postDelayed(runnable, milliseconds);
     }
-
-
 }
