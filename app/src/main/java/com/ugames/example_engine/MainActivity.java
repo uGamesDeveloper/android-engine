@@ -1,6 +1,7 @@
 package com.ugames.example_engine;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ugames.engine.Prefs;
 import com.ugames.engine.coroutine.Coroutine;
 import com.ugames.engine.coroutine.instructions.WaitForSeconds;
+import com.ugames.engine.refs.Out;
+import com.ugames.engine.refs.Ref;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +27,14 @@ public class MainActivity extends AppCompatActivity {
         Prefs.save();
 
         Coroutine.startCoroutine(coroutine, this);
+        Out<String> out = new Out<>();
+
+        update(out);
+        Log.e("TEST111", out.value);
+    }
+
+    void update(Out<String> out) {
+        out.value = "2221";
     }
 
     Coroutine coroutine = new Coroutine(c -> {
