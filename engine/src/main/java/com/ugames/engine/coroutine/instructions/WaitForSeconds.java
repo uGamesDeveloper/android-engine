@@ -1,6 +1,8 @@
-package com.ugames.engine.coroutine;
+package com.ugames.engine.coroutine.instructions;
 
 import android.os.Handler;
+
+import com.ugames.engine.coroutine.Coroutine;
 
 public class WaitForSeconds {
 

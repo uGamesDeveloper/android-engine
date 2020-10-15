@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
+import com.ugames.engine.coroutine.instructions.YieldInstruction;
+
 import java.util.ArrayDeque;
 
 public class Coroutine {
@@ -20,7 +22,7 @@ public class Coroutine {
         coroutine.run();
     }
 
-    public void main(MainInstruction yieldInstruction) {
+    public void main(YieldInstruction yieldInstruction) {
         queue.addLast(new InstructionStruct(yieldInstruction, TypeInstruction.main));
     }
 
@@ -31,14 +33,14 @@ public class Coroutine {
     private void run() {
         if (queue.size() > 0) {
             InstructionStruct instructionStruct = queue.pop();
-            Instruction instruction = instructionStruct.getInstruction();
+            YieldInstruction instruction = instructionStruct.getInstruction();
             if (instructionStruct.getTypeInstruction() == TypeInstruction.main) {
                 if (instruction != null)
-                    ((MainInstruction) instruction).run();
+                    instruction.run();
                 run();
             } else if (instructionStruct.getTypeInstruction() == TypeInstruction.yield) {
                 if (instruction != null)
-                    ((YieldInstruction) instruction).run(this);
+                    instruction.run();
                 else {
                     run();
                 }
@@ -52,22 +54,21 @@ public class Coroutine {
         activity.runOnUiThread(this::run);
     }
 
-
     private enum TypeInstruction {
         main,
         yield
     }
 
     private static class InstructionStruct {
-        Instruction instruction;
+        YieldInstruction instruction;
         TypeInstruction typeInstruction;
 
-        public InstructionStruct(Instruction instruction, TypeInstruction typeInstruction) {
+        public InstructionStruct(YieldInstruction instruction, TypeInstruction typeInstruction) {
             this.instruction = instruction;
             this.typeInstruction = typeInstruction;
         }
 
-        public Instruction getInstruction() {
+        public YieldInstruction getInstruction() {
             return instruction;
         }
 

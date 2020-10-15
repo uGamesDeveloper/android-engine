@@ -1,17 +1,13 @@
 package com.ugames.example_engine;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ugames.engine.Prefs;
 import com.ugames.engine.coroutine.Coroutine;
-import com.ugames.engine.coroutine.ICoroutine;
-import com.ugames.engine.coroutine.WaitForSeconds;
-import com.ugames.engine.coroutine.YieldInstruction;
+import com.ugames.engine.coroutine.instructions.WaitForSeconds;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,18 +26,19 @@ public class MainActivity extends AppCompatActivity {
         Coroutine.startCoroutine(coroutine, this);
     }
 
-    Coroutine coroutine = new Coroutine(coroutine -> {
+    Coroutine coroutine = new Coroutine(c -> {
         final int[] sum = {0};
-        coroutine.yield((c) -> {
-            new Thread(() -> {
-                for(int i = 0; i < 100000; i++) {
+        c.yield(() -> {
+            /*new Thread(() -> {
+                for(int i = 0; i < 10000000; i++) {
                     sum[0] += i;
                 }
                 c.complete();
-            }).start();
+            }).start();*/
+            new WaitForSeconds(3, c);
         });
 
-        coroutine.main(() -> Toast.makeText(this, sum[0] + " ", Toast.LENGTH_SHORT).show());
+        c.main(() -> Toast.makeText(this, sum[0] + " ", Toast.LENGTH_SHORT).show());
 
     });
 
