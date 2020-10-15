@@ -20,7 +20,7 @@ public class Prefs {
 
 
     public static void migration(MigrationPrefsEnum[] names) {
-        for(int i = 0; i < names.length; i++) {
+        for (int i = 0; i < names.length; i++) {
             Log.e("TEST111", names[i].toString());
         }
     }
@@ -56,43 +56,58 @@ public class Prefs {
     }
 
     public static void setInt(@NonNull String key, int value) {
-        getInstance().getEditor().putInt(key, value);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
     }
 
     public static int getInt(@NonNull String key, int defaultValue) {
-        return getInstance().getSharedPreferences().getInt(key, defaultValue);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(key, defaultValue);
     }
 
     public static void setLong(@NonNull String key, long value) {
-        getInstance().getEditor().putLong(key, value);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(key, value);
     }
 
     public static long getLong(@NonNull String key, long defaultValue) {
-        return getInstance().getSharedPreferences().getLong(key, defaultValue);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        return sharedPreferences.getLong(key, defaultValue);
     }
 
     public static void setFloat(@NonNull String key, float value) {
-        getInstance().getEditor().putFloat(key, value);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat(key, value);
     }
 
     public static float getFloat(@NonNull String key, float defaultValue) {
-        return getInstance().getSharedPreferences().getFloat(key, defaultValue);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        return sharedPreferences.getFloat(key, defaultValue);
     }
 
     public static void setBool(@NonNull String key, boolean value) {
-        getInstance().getEditor().putBoolean(key, value);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key, value);
     }
 
     public static boolean getBool(@NonNull String key, boolean defaultValue) {
-        return getInstance().getSharedPreferences().getBoolean(key, defaultValue);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(key, defaultValue);
     }
 
     public static void setString(String key, String value) {
-        getInstance().getEditor().putString(key, value);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
     }
 
     public static String getString(@NonNull String key, String defaultValue) {
-        return getInstance().getSharedPreferences().getString(key, defaultValue);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        return sharedPreferences.getString(key, defaultValue);
     }
 
     public static void deleteKey(String key) {
@@ -102,14 +117,17 @@ public class Prefs {
     }
 
     public static void deleteAll() {
-        for (String key : getInstance().getSharedPreferences().getAll().keySet()) {
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (String key : sharedPreferences.getAll().keySet()) {
             if (hasKey(key))
-                getInstance().getEditor().remove(key);
+                editor.remove(key);
         }
     }
 
     public static boolean hasKey(@NonNull String key) {
-        return getInstance().getSharedPreferences().contains(key);
+        SharedPreferences sharedPreferences = getInstance().getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
+        return sharedPreferences.contains(key);
     }
 
     public static void save() {
