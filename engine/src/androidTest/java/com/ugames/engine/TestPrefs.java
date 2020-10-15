@@ -1,10 +1,11 @@
 package com.ugames.engine;
 
-import android.app.Activity;
 import android.content.Context;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.ugames.engine.prefs.Prefs;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

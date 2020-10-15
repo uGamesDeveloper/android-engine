@@ -1,4 +1,4 @@
-package com.ugames.engine;
+package com.ugames.engine.prefs;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,6 +18,12 @@ public class Prefs {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
+
+    public static void migration(MigrationPrefsEnum[] names) {
+        for(int i = 0; i < names.length; i++) {
+            Log.e("TEST111", names[i].toString());
+        }
+    }
 
     @SuppressLint("CommitPrefEdits")
     private Prefs(@NonNull Context context) {
@@ -39,6 +45,7 @@ public class Prefs {
     }
 
     private SharedPreferences getSharedPreferences() {
+        sharedPreferences = this.getContext().getSharedPreferences("MY_PREF", Context.MODE_PRIVATE);
         return sharedPreferences;
     }
 
