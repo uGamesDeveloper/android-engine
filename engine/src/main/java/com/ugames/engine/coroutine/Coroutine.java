@@ -1,5 +1,7 @@
 package com.ugames.engine.coroutine;
 
+import android.app.Activity;
+
 import androidx.annotation.NonNull;
 
 import java.util.ArrayDeque;
@@ -7,12 +9,14 @@ import java.util.ArrayDeque;
 public class Coroutine {
 
     private ArrayDeque<InstructionStruct> queue = new ArrayDeque<>();
+    private Activity activity;
 
     public Coroutine(@NonNull ICoroutine iCoroutine) {
         iCoroutine.run(this);
     }
 
-    public static void startCoroutine(@NonNull Coroutine coroutine) {
+    public static void startCoroutine(@NonNull Coroutine coroutine, Activity activity) {
+        coroutine.activity = activity;
         coroutine.run();
     }
 
@@ -32,7 +36,7 @@ public class Coroutine {
                 if (instruction != null)
                     ((MainInstruction) instruction).run();
                 run();
-            } else if(instructionStruct.getTypeInstruction() == TypeInstruction.yield){
+            } else if (instructionStruct.getTypeInstruction() == TypeInstruction.yield) {
                 if (instruction != null)
                     ((YieldInstruction) instruction).run(this);
                 else {
@@ -45,7 +49,7 @@ public class Coroutine {
     }
 
     public void complete() {
-        run();
+        activity.runOnUiThread(this::run);
     }
 
 

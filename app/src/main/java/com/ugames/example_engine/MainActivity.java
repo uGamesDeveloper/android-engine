@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ugames.engine.Prefs;
 import com.ugames.engine.coroutine.Coroutine;
@@ -14,7 +15,6 @@ import com.ugames.engine.coroutine.YieldInstruction;
 
 public class MainActivity extends AppCompatActivity {
 
-    //72 94 50
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,42 +27,22 @@ public class MainActivity extends AppCompatActivity {
         }
         Prefs.save();
 
-        /*Coroutine.startCoroutine(coroutine);
-        Coroutine.startCoroutine(coroutine2);*/
+        Coroutine.startCoroutine(coroutine, this);
     }
 
     Coroutine coroutine = new Coroutine(coroutine -> {
-        for (int i = 0; i < 100000; i++) {
-            coroutine.yield((c) -> {
-                new WaitForSeconds(0.02f, c);
-            });
-
-            int finalI = i;
-            coroutine.main(() -> Log.e("TEST111", finalI + " "));
-        }
-    });
-
-    Coroutine coroutine2 = new Coroutine(coroutine -> {
-        coroutine.main(() -> Log.e("Test111", "1"));
-
-        coroutine.yield((с) -> {
-            Runnable runnable = () -> {
-                Log.e("TEST111", "2");
-                с.complete();
-            };
-            new Handler().postDelayed(runnable, 2000);
-        });
-        coroutine.yield((с) -> {
-            Runnable runnable = () -> {
-                Log.e("TEST111", "3");
-                с.complete();
-            };
-            new Handler().postDelayed(runnable, 2000);
+        final int[] sum = {0};
+        coroutine.yield((c) -> {
+            new Thread(() -> {
+                for(int i = 0; i < 100000; i++) {
+                    sum[0] += i;
+                }
+                c.complete();
+            }).start();
         });
 
-        coroutine.main(() -> {
-            Log.e("Test111", "4");
-        });
+        coroutine.main(() -> Toast.makeText(this, sum[0] + " ", Toast.LENGTH_SHORT).show());
+
     });
 
 }
