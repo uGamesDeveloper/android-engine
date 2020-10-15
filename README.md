@@ -16,6 +16,6 @@ allprojects {
 
 ```gradle
 dependencies {
- implementation 'com.github.uGamesDeveloper:android-engine:1.1.1''
+ implementation 'com.github.uGamesDeveloper:android-engine:1.1.2''
 }
 ```
