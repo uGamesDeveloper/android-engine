@@ -63,7 +63,7 @@ public class TestPrefs {
     @Test
     public void testOtherLib() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        Prefs.initWithOtherLibrarys(context, Lib.values());
+        Prefs.initWithOtherLibrary(context, Lib.values());
 
         Prefs.setInt("testInt1", 20, Lib.Settings);
         Prefs.setInt("testInt1", 10, Lib.Other);

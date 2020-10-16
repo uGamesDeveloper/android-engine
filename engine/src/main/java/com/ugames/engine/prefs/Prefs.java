@@ -55,7 +55,7 @@ public class Prefs {
         instance = new Prefs(context, new PrefsLibrary[]{DefaultLibrary.UGamesSharedPreferences});
     }
 
-    public static void initWithOtherLibrarys(@NonNull Context context, PrefsLibrary[] libraryNames) {
+    public static void initWithOtherLibrary(@NonNull Context context, PrefsLibrary[] libraryNames) {
         PrefsLibrary[] libraries = new PrefsLibrary[libraryNames.length + 1];
         System.arraycopy(libraryNames, 0, libraries, 1, libraryNames.length);
         libraries[0] = DefaultLibrary.UGamesSharedPreferences;
