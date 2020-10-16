@@ -51,15 +51,16 @@ Prefs.save();
 
 #### Использование с собственными хранилищами
 
-При использовании с собвсенными хранилищами значения хранятся в HasMap<PrefsLibrary, SharedPreferences>.
+При использовании с собственными хранилищами значения хранятся в HasMap<PrefsLibrary, SharedPreferences>.
 
-Создайте enum ваших хранилищ 
+Создайте enum ваших хранилищ реазивовывающий PrefsLibrary
 ```java
 enum Lib implements PrefsLibrary {
   Settings,
   Other
 }
 ```
+Используйте все методы с указанием вашего хранилища. Если вы не укажите хранилище, то чтение и запись будут происходить в стандартное хранилище
 
 ```java
 Prefs.initWithOtherLibrary(getContext(), Lib.values());
