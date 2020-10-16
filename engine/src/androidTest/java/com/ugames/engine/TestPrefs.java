@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.ugames.engine.prefs.Prefs;
+import com.ugames.engine.prefs.PrefsLibrary;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,11 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class TestPrefs {
+
+    private enum Lib implements PrefsLibrary {
+        Settings,
+        Other
+    }
 
     @Test
     public void useAppContext() {
@@ -52,6 +58,34 @@ public class TestPrefs {
         assertEquals(1L, Prefs.getLong(keyLong, 0L));
         assertTrue(Prefs.getBool(keyBool, false));
         assertEquals("1", Prefs.getString(keyString, "0"));
+    }
+
+    @Test
+    public void testOtherLib() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        Prefs.initWithOtherLibrarys(context, Lib.values());
+
+        Prefs.setInt("testInt1", 20, Lib.Settings);
+        Prefs.setInt("testInt1", 10, Lib.Other);
+        Prefs.setInt("testInt1", 100);
+
+        Prefs.save(Lib.Settings);
+        Prefs.save(Lib.Other);
+        Prefs.save();
+
+        assertEquals(Prefs.getInt("testInt1", 0, Lib.Settings), 20);
+        assertEquals(Prefs.getInt("testInt1", 0, Lib.Other), 10);
+        assertEquals(Prefs.getInt("testInt1", 0), 100);
+
+        Prefs.deleteKey("testInt1", Lib.Settings);
+        Prefs.deleteAll(Lib.Other);
+
+        Prefs.save(Lib.Settings);
+        Prefs.save(Lib.Other);
+
+        assertEquals(Prefs.getInt("testInt1", -1, Lib.Settings), -1);
+        assertEquals(Prefs.getInt("testInt1", -1, Lib.Other), -1);
+
     }
 
     @Test
@@ -94,4 +128,8 @@ public class TestPrefs {
             assertFalse(Prefs.hasKey("testStringDelete" + i));
         }
     }
+
+
+
+
 }

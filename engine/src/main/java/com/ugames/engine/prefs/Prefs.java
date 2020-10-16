@@ -17,8 +17,8 @@ public class Prefs {
     private static Prefs instance;
     private Context context;
 
-    private HashMap<PrefsLibrary, SharedPreferences> sharedPreferencesHashMap = new HashMap<>();
-    private HashMap<PrefsLibrary, SharedPreferences.Editor> editorHashMap = new HashMap<>();
+    private HashMap<PrefsLibrary, SharedPreferences> sharedPreferencesHashMap;
+    private HashMap<PrefsLibrary, SharedPreferences.Editor> editorHashMap;
 
 
     private enum DefaultLibrary implements PrefsLibrary {
@@ -28,13 +28,17 @@ public class Prefs {
     @SuppressLint("CommitPrefEdits")
     private Prefs(@NonNull Context context, PrefsLibrary[] libraryNames) {
         this.context = context.getApplicationContext();
-        for (com.ugames.engine.prefs.PrefsLibrary libraryName : libraryNames) {
+
+        sharedPreferencesHashMap = new HashMap<>();
+        editorHashMap = new HashMap<>();
+
+        for (PrefsLibrary libraryName : libraryNames) {
 
             SharedPreferences sharedPreferences = getContext().getSharedPreferences(libraryName.toString(), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            sharedPreferencesHashMap.put(DefaultLibrary.UGamesSharedPreferences, sharedPreferences);
-            editorHashMap.put(DefaultLibrary.UGamesSharedPreferences, editor);
+            sharedPreferencesHashMap.put(libraryName, sharedPreferences);
+            editorHashMap.put(libraryName, editor);
         }
     }
 
@@ -48,15 +52,14 @@ public class Prefs {
 
 
     public static void init(@NonNull Context context) {
-        if (getInstance() == null || getInstance().getContext() != context) {
-            instance = new Prefs(context, new PrefsLibrary[]{DefaultLibrary.UGamesSharedPreferences});
-        }
+        instance = new Prefs(context, new PrefsLibrary[]{DefaultLibrary.UGamesSharedPreferences});
     }
 
-    public static void initWithMigration(@NonNull Context context, PrefsLibrary[] libraryNames) {
-        if (getInstance() == null || getInstance().getContext() != context) {
-            instance = new Prefs(context, libraryNames);
-        }
+    public static void initWithOtherLibrarys(@NonNull Context context, PrefsLibrary[] libraryNames) {
+        PrefsLibrary[] libraries = new PrefsLibrary[libraryNames.length + 1];
+        System.arraycopy(libraryNames, 0, libraries, 1, libraryNames.length);
+        libraries[0] = DefaultLibrary.UGamesSharedPreferences;
+        instance = new Prefs(context, libraries);
     }
 
     private static SharedPreferences getSharedPreferences(PrefsLibrary library) {
