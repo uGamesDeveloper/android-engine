@@ -111,6 +111,81 @@ void toChange(Out<Integer> integer) {
 }
 ```
 
+# Coroutine 
+
+Coroutine - процедура, управляющая синхронными и асинхронными методами, которую можно остановить или прервать.
+
+Корутина создается как объект 
+
+```java
+Coroutine coroutine = new Coroutine(c -> {
+
+});
+```
+
+В корутине можно применять 2 метода - main и yiled.
+
+* main метод выполняется в главном потоке. При завершении выполнения метода происходить автоматическое переключение на следу
+* yiled метод может выполняться в любом потоке, на выбор пользователя. При завершении выполнения необходимо указать, что выполнение кода завершено c помощью метода complete();
+
+
+Данная корутина подождет 2 секунды, после чего выведет в лог "testLog".
+```java 
+Coroutine coroutine = new Coroutine(c -> {
+  c.yield(() -> {
+    Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+              c.complete();
+            }
+    };
+    new Handler().postDelayed(runnable, 2000);
+  });
+
+  c.main(() -> Log.e("tag", "testLog"));
+});
+```
+
+Данная корутина напечатает в лог "testLog" 20 раз с задержкой 1 секунду.
+
+```java
+Coroutine coroutine = new Coroutine(c -> {
+  for (int i = 0; i < 20; i++) {
+    c.yield(() -> new WaitForSeconds(1, c));
+  
+    c.main(() -> Log.e("tag", "testLog"));
+  }
+});
+```
+
+
+* Запуск корутины 
+```java
+Coroutine.startCoroutine(coroutine, activity);
+```
+
+* Остановка корутины 
+```java
+Coroutine.stopCoroutine(coroutine);
+```
+
+* Продолжить выполнение с остановленного места
+```java
+Coroutine.resumeCoroutine(coroutine);
+```
+
+* Прервать выполнение без возможности продожить 
+```java
+Coroutine.breakCoroutine(coroutine);
+```
+
+
+
+
+
+
+
+
 
 
 
