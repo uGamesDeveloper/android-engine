@@ -90,7 +90,7 @@ if(Prefs.hasKey("int1", Lib.Settings) {
    Log.e("tag", "Log: " + integer.value.toString());    //Log: 100
  }
  
- void toChange(Ref integer) {
+ void toChange(Ref<Integer> integer) {
    integer.value = 100;
  }
 ```
