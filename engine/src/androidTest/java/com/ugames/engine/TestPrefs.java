@@ -83,6 +83,8 @@ public class TestPrefs {
         Prefs.save(Lib.Settings);
         Prefs.save(Lib.Other);
 
+
+
         assertEquals(Prefs.getInt("testInt1", -1, Lib.Settings), -1);
         assertEquals(Prefs.getInt("testInt1", -1, Lib.Other), -1);
 

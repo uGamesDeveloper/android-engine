@@ -1,14 +1,14 @@
 package com.ugames.example_engine;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ugames.engine.prefs.PrefsLibrary;
-import com.ugames.engine.prefs.Prefs;
 import com.ugames.engine.coroutine.Coroutine;
 import com.ugames.engine.coroutine.instructions.WaitForSeconds;
+import com.ugames.engine.refs.Out;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,37 +17,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-        for (int i = 0; i < 1000; i++) {
-            Prefs.setString("key", "value");
-        }
-        Prefs.save();
-
         Coroutine.startCoroutine(coroutine, this);
     }
 
-    public enum Migration implements PrefsLibrary {
-        FirstElement,
-        SecondElement,
-        Settings
+    void mainFunction() {
+        Out<Integer> integer = new Out<>();
+        toChange(integer);
+        Log.e("tag", "Log: " + integer.value.toString());    //Log: 100
+    }
+
+    void toChange(Out<Integer> integer) {
+        integer.value = 100;
     }
 
     Coroutine coroutine = new Coroutine(c -> {
-        for (int i = 0; i < 20; i++) {
-            c.yield(() -> new WaitForSeconds(1, c));
-            c.main(() -> Log.e("TEST111", "log"));
-        }
+        Out<String> out = new Out<>();
+        c.yield(() -> new WaitForSeconds(1, c));
+        c.yield(() -> {
+            out.value = "newString";
+            c.complete();
+        });
+        c.main(() -> Log.e("tag", out.value));
     });
-
-    Coroutine coroutine2 = new Coroutine(c -> {
-        c.yield(() -> new WaitForSeconds(5.2f, c));
-        c.main(this::stopTimeCoroutine);
-    });
-
-
-    private void stopTimeCoroutine() {
-        Coroutine.stopCoroutine(coroutine);
-    }
-
 }

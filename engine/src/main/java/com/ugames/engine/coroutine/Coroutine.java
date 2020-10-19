@@ -5,6 +5,8 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.ugames.engine.coroutine.instructions.YieldInstruction;
+import com.ugames.engine.refs.Out;
+import com.ugames.engine.refs.Ref;
 
 import java.util.ArrayDeque;
 
@@ -13,8 +15,12 @@ public class Coroutine {
     private ArrayDeque<InstructionStruct> queue = new ArrayDeque<>();
     private Activity activity;
 
+    private boolean isPlaying;
+
     public Coroutine(@NonNull ICoroutine iCoroutine) {
+        isPlaying = true;
         iCoroutine.run(this);
+
     }
 
     public static void startCoroutine(@NonNull Coroutine coroutine, Activity activity) {
@@ -26,6 +32,14 @@ public class Coroutine {
         coroutine.stopCoroutine();
     }
 
+    public static void breakCoroutine(@NonNull Coroutine coroutine) {
+        coroutine.coroutineBreak();
+    }
+
+    public static void resumeCoroutine(@NonNull Coroutine coroutine) {
+        coroutine.resumeCoroutine();
+    }
+
     public void main(YieldInstruction yieldInstruction) {
         queue.addLast(new InstructionStruct(yieldInstruction, TypeInstruction.main));
     }
@@ -35,34 +49,40 @@ public class Coroutine {
     }
 
     private void run() {
-        if (queue.size() > 0) {
-            InstructionStruct instructionStruct = queue.pop();
-            YieldInstruction instruction = instructionStruct.getInstruction();
-            if (instructionStruct.getTypeInstruction() == TypeInstruction.main) {
-                if (instruction != null)
-                    instruction.run();
-                run();
-            } else if (instructionStruct.getTypeInstruction() == TypeInstruction.yield) {
-                if (instruction != null)
-                    instruction.run();
-                else {
+        if(isPlaying) {
+            if (queue.size() > 0) {
+                InstructionStruct instructionStruct = queue.pop();
+                YieldInstruction instruction = instructionStruct.getInstruction();
+                if (instructionStruct.getTypeInstruction() == TypeInstruction.main) {
+                    if (instruction != null)
+                        instruction.run();
                     run();
+                } else if (instructionStruct.getTypeInstruction() == TypeInstruction.yield) {
+                    if (instruction != null)
+                        instruction.run();
+                    else {
+                        run();
+                    }
                 }
-            } else if(instructionStruct.getTypeInstruction() == TypeInstruction.coroutineBreak) {
-                stopCoroutine();
-            }
-            else {
-                throw new IllegalArgumentException("Not current type instruction yet.");
+                else {
+                    throw new IllegalArgumentException("Not current type instruction yet.");
+                }
             }
         }
     }
 
     private void stopCoroutine() {
-        queue.clear();
+        isPlaying = false;
+    }
+
+    private void resumeCoroutine() {
+        isPlaying = true;
+        run();
     }
 
     public void coroutineBreak() {
-        queue.addLast(new InstructionStruct(null, TypeInstruction.coroutineBreak));
+        isPlaying = false;
+        queue.clear();
     }
 
     public void complete() {
@@ -72,7 +92,6 @@ public class Coroutine {
     private enum TypeInstruction {
         main,
         yield,
-        coroutineBreak
     }
 
     private static class InstructionStruct {
@@ -91,5 +110,6 @@ public class Coroutine {
         public TypeInstruction getTypeInstruction() {
             return typeInstruction;
         }
+
     }
 }
