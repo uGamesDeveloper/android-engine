@@ -53,7 +53,7 @@ Prefs.save();
 
 При использовании с собственными хранилищами значения хранятся в HasMap<PrefsLibrary, SharedPreferences>.
 
-Создайте enum ваших хранилищ реазивовывающий PrefsLibrary
+Создайте enum ваших хранилищ реализовывающий PrefsLibrary
 ```java
 enum Lib implements PrefsLibrary {
   Settings,
@@ -158,26 +158,30 @@ Coroutine coroutine = new Coroutine(c -> {
 });
 ```
 
-
-* Запуск корутины 
+Возвращение значений из yield можно реализовать с помощью Ref или Out
 ```java
-Coroutine.startCoroutine(coroutine, activity);
+Coroutine coroutine = new Coroutine(c -> {
+  Out<String> out = new Out<>();
+  c.yield(() -> new WaitForSeconds(1, c));
+  c.yield(() -> {
+    out.value = "newString";
+    c.complete();
+  });
+  c.main(() -> Log.e("tag", out.value));
+});
 ```
 
-* Остановка корутины 
-```java
-Coroutine.stopCoroutine(coroutine);
-```
 
-* Продолжить выполнение с остановленного места
-```java
-Coroutine.resumeCoroutine(coroutine);
-```
 
-* Прервать выполнение без возможности продожить 
-```java
-Coroutine.breakCoroutine(coroutine);
-```
+* ```Coroutine.startCoroutine(coroutine, activity); ```   Запуск корутины 
+
+* ```Coroutine.stopCoroutine(coroutine);```   Остановка корутины 
+
+* ```Coroutine.resumeCoroutine(coroutine);```   Продолжить выполнение с остановленного места
+
+
+* ```Coroutine.breakCoroutine(coroutine);```   Прервать выполнение без возможности продожить 
+
 
 
 
