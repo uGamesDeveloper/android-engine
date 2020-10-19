@@ -73,7 +73,46 @@ if(Prefs.hasKey("int1", Lib.Settings) {
 }
 ```
 
-# Coroutine
+# Refs
+
+#### Ref<> - обёртка для передачи и возвращения инициализированного значения через параметры методов.
+
+Инициализация происходит до передачи в функцию. Все изменения, произошедшие в функции, будут отражены вне функции.
+
+```java
+ void mainFunction() {
+   Integer value = 1;
+   Ref<Integer> integer = new Ref<>(value);
+   
+   Log.e("tag", "Log: " + integer.value.toString());    //Log: 1
+   
+   toChange(integer);
+   Log.e("tag", "Log: " + integer.value.toString());    //Log: 100
+ }
+ 
+ void toChange(Ref integer) {
+   integer.value = 100;
+ }
+```
+
+#### Out<> -  обёртка для возвращения не инициализированного значения через параметры методов.
+
+Установка значения может происходить после передачи ссылки в параметр метода. Все изменения будут отражены вне функции.
+
+```java
+void mainFunction() {
+  Out<Integer> integer = new Out<>();
+  toChange(integer);
+  Log.e("tag", "Log: " + integer.value.toString());    //Log: 100
+}
+
+void toChange(Out<Integer> integer) {
+  integer.value = 100;
+}
+```
+
+
+
 
 
 
